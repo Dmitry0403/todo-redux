@@ -1,0 +1,9 @@
+.list {
+  list-style-type: none;
+  font-size: 30px;
+  margin-left: 50px;
+}
+
+.listTask {
+  display: flex;
+}
