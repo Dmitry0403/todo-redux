@@ -1,9 +1,9 @@
 import React from "react";
-import { Tasks } from "../Tasks/Tasks";
-import { Input } from "../Input/Input";
-import { FilterList } from "../Filter/Filter";
+import { Tasks } from "../Tasks";
+import { Input } from "../Input";
+import { FilterList } from "../Filter";
 import css from "./styles.module.css";
-import { TASK_STATUSES, Task } from "../types";
+import { TASK_STATUSES, Task } from "../store";
 
 
 interface StateTask {
@@ -76,9 +76,9 @@ export class ToDo extends React.Component<{}, StateTask> {
         <div className={css.sectionInput}>
           <h1>Список дел</h1>
           <Input
-            value={value}
-            taskChange={this.handleChange}
-            taskSubmit={this.handleSubmit}
+            // value={value}
+            // taskChange={this.handleChange}
+            // taskSubmit={this.handleSubmit}
           />
           <FilterList
             isFilter={isFilter}
@@ -88,7 +88,9 @@ export class ToDo extends React.Component<{}, StateTask> {
           />
         </div>
         <div className={css.sectionTasks}>
-          <Tasks tasks={selectTasks} onChange={this.handleCheckbox} />
+          <Tasks 
+          // tasks={selectTasks} onChange={this.handleCheckbox} 
+          />
         </div>
       </div>
     );

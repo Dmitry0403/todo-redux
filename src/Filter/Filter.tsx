@@ -1,5 +1,5 @@
 import css from "./styles.module.css"
-import {Checkbox} from "../Checkbox/Checkbox"
+import {Checkbox} from "../Checkbox"
 
 interface FilterProps {
   onSelect: (e: React.ChangeEvent<HTMLSelectElement>) => void;

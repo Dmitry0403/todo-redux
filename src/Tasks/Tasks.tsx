@@ -1,13 +1,20 @@
 import css from "./styles.module.css";
-import { Task } from "../types";
-import { Checkbox } from "../Checkbox/Checkbox";
+import { RootState, Task } from "../store";
+import { Checkbox } from "../Checkbox";
+import { connect } from "react-redux";
 
-interface TasksProps {
+interface ReduxStateProps {
   tasks: Task[];
+}
+
+interface ReduxDispatchProps {
   onChange: (v: number) => void;
 }
 
-export const Tasks: React.FC<TasksProps> = ({ tasks, onChange }) => {
+export const BaseTasks: React.FC<ReduxStateProps & ReduxDispatchProps> = ({
+  tasks,
+  onChange,
+}) => {
   return (
     <ul className={css.list}>
       {tasks.map((task) => (
@@ -22,3 +29,17 @@ export const Tasks: React.FC<TasksProps> = ({ tasks, onChange }) => {
     </ul>
   );
 };
+
+const mapStateProps = (state: RootState): ReduxStateProps => {
+  return {
+    tasks: state.tasks,
+  };
+};
+
+const mapDispathProps = (dispatch: any) => {
+  return {
+    onChange: (paylaod: number) => dispatch({ type: "doneTask" }, paylaod),
+  };
+};
+
+export const Tasks = connect(mapStateProps, mapDispathProps)(BaseTasks);

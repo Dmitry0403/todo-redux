@@ -1,29 +1,51 @@
 import React from "react";
 import css from "./styles.module.css";
+import { connect } from "react-redux";
+import type { RootState } from "../store";
 
-interface InputProps {
+interface ReduxStateProps {
   value: string;
-  taskChange: (v: string) => void;
+}
+
+interface ReduxDispatchProps {
+  inputChange: (value: string) => void;
   taskSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
 }
 
-export class Input extends React.Component<InputProps> {
-  handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.props.taskChange(e.target.value);
-  };
-
+class InputBase extends React.Component<ReduxStateProps & ReduxDispatchProps> {
   render() {
+    const { value, inputChange, taskSubmit } = this.props;
     return (
-      <form onSubmit={this.props.taskSubmit}>
+      <form onSubmit={(e) => taskSubmit(e)}>
         <input
           className={css.input}
           type="text"
           placeholder="Введите задание"
-          value={this.props.value}
-          onChange={this.handleChange}
+          value={value}
+          onChange={(e) => inputChange(e.target.value)}
         ></input>
-        <button className={css.input} type="submit">добавить</button>
+        <button className={css.input} type="submit">
+          добавить
+        </button>
       </form>
     );
   }
 }
+
+const mapStateProps = (state: RootState): ReduxStateProps => {
+  return {
+    value: state.value.value,
+  };
+};
+
+const mapDispathProps = (dispatch: any): ReduxDispatchProps => {
+  return {
+    inputChange: (payload: string) =>
+      dispatch({ type: "changeValue" }, payload),
+    taskSubmit: (e) => {
+      dispatch({ type: "addTask" }, e);
+    },
+  };
+};
+
+export const Input = connect(mapStateProps, mapDispathProps)(InputBase);
