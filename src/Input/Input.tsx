@@ -16,7 +16,7 @@ class InputBase extends React.Component<ReduxStateProps & ReduxDispatchProps> {
   render() {
     const { value, inputChange, taskSubmit } = this.props;
     return (
-      <form onSubmit={(e) => taskSubmit(e)}>
+      <form onSubmit={taskSubmit}>
         <input
           className={css.input}
           type="text"
@@ -34,7 +34,7 @@ class InputBase extends React.Component<ReduxStateProps & ReduxDispatchProps> {
 
 const mapStateProps = (state: RootState): ReduxStateProps => {
   return {
-    value: state.value.value,
+    value: state.inputState.value,
   };
 };
 
@@ -43,7 +43,8 @@ const mapDispathProps = (dispatch: any): ReduxDispatchProps => {
     inputChange: (payload: string) =>
       dispatch({ type: "changeValue" }, payload),
     taskSubmit: (e) => {
-      dispatch({ type: "addTask" }, e);
+      e.preventDefault();
+      dispatch({ type: "addTask" });
     },
   };
 };

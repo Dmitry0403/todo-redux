@@ -1,5 +1,7 @@
+import { ValueInput } from "./valueReduce"
+
 export interface Task {
-    title: string;
+    title: ValueInput;
     isChecked: boolean;
     id: number;
   }

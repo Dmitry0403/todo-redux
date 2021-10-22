@@ -25,18 +25,18 @@ export class ToDo extends React.Component<{}, StateTask> {
     this.setState({ value });
   };
 
-  handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    const { value } = this.state;
-    if (value.trim()) {
-      this.setState((prevState) => ({
-        tasks: prevState.tasks.concat([
-          { title: value, isChecked: false, id: Date.now() },
-        ]),
-        value: "",
-      }));
-      e.preventDefault();
-    }
-  };
+  // handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  //   const { value } = this.state;
+  //   if (value.trim()) {
+  //     this.setState((prevState) => ({
+  //       tasks: prevState.tasks.concat([
+  //         { title: value, isChecked: false, id: Date.now() },
+  //       ]),
+  //       value: "",
+  //     }));
+  //     e.preventDefault();
+  //   }
+  // };
 
   handleCheckbox = (id: number) => {
     this.setState((prevState) => ({

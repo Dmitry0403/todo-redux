@@ -32,7 +32,7 @@ export const BaseTasks: React.FC<ReduxStateProps & ReduxDispatchProps> = ({
 
 const mapStateProps = (state: RootState): ReduxStateProps => {
   return {
-    tasks: state.tasks,
+    tasks: state.tasksState.tasks,
   };
 };
 

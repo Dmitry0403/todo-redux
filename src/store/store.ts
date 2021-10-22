@@ -1,10 +1,11 @@
 import { createStore, combineReducers } from "redux";
-import { valueReducer } from './inputReduce';
-import { tasksReducer } from "./taskReduce";
+import { valueReducer } from './valueReduce';
+import { tasksReducer } from "./tasksReduce";
+
 
 const reducer = combineReducers({
-  value: valueReducer,
-  tasks: tasksReducer,
+  inputState: valueReducer,
+  tasksState: tasksReducer,
 });
 
 export const store = createStore(reducer);
