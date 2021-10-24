@@ -1,1 +1,2 @@
-export { FilterList } from "./Filter"
+export { FilterList } from "./FilterList"
+export { Filter } from "./Filter"

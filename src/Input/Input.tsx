@@ -2,6 +2,7 @@ import React from "react";
 import css from "./styles.module.css";
 import { connect } from "react-redux";
 import type { RootState } from "../store";
+import { TASK_ACTIONS } from "../store";
 
 interface ReduxStateProps {
   value: string;
@@ -9,14 +10,14 @@ interface ReduxStateProps {
 
 interface ReduxDispatchProps {
   inputChange: (value: string) => void;
-  taskSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+  taskSubmit: (e: React.FormEvent<HTMLFormElement>, value: string) => void;
 }
 
 class InputBase extends React.Component<ReduxStateProps & ReduxDispatchProps> {
   render() {
     const { value, inputChange, taskSubmit } = this.props;
     return (
-      <form onSubmit={taskSubmit}>
+      <form onSubmit={(e) => taskSubmit(e, value)}>
         <input
           className={css.input}
           type="text"
@@ -38,15 +39,15 @@ const mapStateProps = (state: RootState): ReduxStateProps => {
   };
 };
 
-const mapDispathProps = (dispatch: any): ReduxDispatchProps => {
+const mapDispatchProps = (dispatch: any): ReduxDispatchProps => {
   return {
     inputChange: (payload: string) =>
-      dispatch({ type: "changeValue" }, payload),
-    taskSubmit: (e) => {
+      dispatch({ type: TASK_ACTIONS.CHANGE_VALUE, payload }),
+    taskSubmit: (e, payload: string) => {
       e.preventDefault();
-      dispatch({ type: "addTask" });
+      dispatch({ type: TASK_ACTIONS.ADD_TASK, payload });
     },
   };
 };
 
-export const Input = connect(mapStateProps, mapDispathProps)(InputBase);
+export const Input = connect(mapStateProps, mapDispatchProps)(InputBase);

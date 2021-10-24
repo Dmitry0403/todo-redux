@@ -1,16 +1,21 @@
-import css from "./styles.module.css"
-import {Checkbox} from "../Checkbox"
+import css from "./styles.module.css";
+import { connect } from "react-redux";
+import { RootState } from "../store";
+import { TASK_ACTIONS } from "../store";
 
-interface FilterProps {
-  onSelect: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+interface ReduxStateProps {
   selected: string;
 }
 
-function Filter(props: FilterProps) {
+interface ReduxDispatchProps {
+  onSelect: (value: string) => void;
+}
+
+function BaseFilter(props: ReduxStateProps & ReduxDispatchProps) {
   const titles: string[] = ["all", "todo", "done"];
-  const {selected, onSelect} = props
+  const { selected, onSelect } = props;
   return (
-    <select className={css.filter} onChange={onSelect}>
+    <select className={css.filter} onChange={(e) => onSelect(e.target.value)}>
       {titles.map((item) => (
         <option key={item} value={item} selected={selected === item}>
           {item}
@@ -20,26 +25,17 @@ function Filter(props: FilterProps) {
   );
 }
 
-interface FilterListProps {
-  isFilter: boolean;
-  selected: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onSelect: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-}
+const mapStateProps = (state: RootState): ReduxStateProps => {
+  return {
+    selected: state.filterState.selected,
+  };
+};
 
-export function FilterList(props: FilterListProps) {
-  const { isFilter, selected, onChange, onSelect } = props;
-  return (
-    <div>
-      <div className={css.filterList}>
-        <legend>Фильтр дел</legend>
-        <Checkbox onChange={onChange} />
-      </div>
-      {isFilter && (
-        <div>
-          <Filter onSelect={onSelect} selected={selected} />
-        </div>
-      )}
-    </div>
-  );
-}
+const mapDispatchProps = (dispatch: any): ReduxDispatchProps => {
+  return {
+    onSelect: (payload: string) =>
+      dispatch({ type: TASK_ACTIONS.SELECT_TASKS, payload }),
+  };
+};
+
+export const Filter = connect(mapStateProps, mapDispatchProps)(BaseFilter);
