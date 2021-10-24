@@ -19,13 +19,16 @@ const BaseTasks: React.FC<ReduxStateProps & ReduxDispatchProps> = ({
   onChange,
 }) => {
   let selectTasks: Task[] = [];
-    if (select === TASK_STATUSES.ALL) {
-      selectTasks = tasks;
-    } else if (select === TASK_STATUSES.TODO) {
+  switch (select) {
+    case TASK_STATUSES.TODO:
       selectTasks = tasks.filter((task) => !task.isChecked);
-    } else if (select === TASK_STATUSES.DONE) {
+      break;
+    case TASK_STATUSES.DONE:
       selectTasks = tasks.filter((task) => task.isChecked);
-    }
+      break;
+    default:
+      selectTasks = tasks;
+  }
   return (
     <ul className={css.list}>
       {selectTasks.map((task) => (
