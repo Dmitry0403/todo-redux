@@ -3,6 +3,7 @@ import css from "./styles.module.css";
 import { connect } from "react-redux";
 import type { RootState } from "../store";
 import { TASK_ACTIONS } from "../store";
+import { Button } from "../Button";
 
 interface ReduxStateProps {
   value: string;
@@ -25,9 +26,7 @@ class InputBase extends React.Component<ReduxStateProps & ReduxDispatchProps> {
           value={value}
           onChange={(e) => inputChange(e.target.value)}
         ></input>
-        <button className={css.input} type="submit">
-          добавить
-        </button>
+        <Button className={css.input} type="submit" text="добавить" />
       </form>
     );
   }
