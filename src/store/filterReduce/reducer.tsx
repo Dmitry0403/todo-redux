@@ -1,13 +1,13 @@
 import { TASK_ACTIONS } from "..";
 
-export interface FilterState {
+export interface FilterType {
   selected: string;
 }
 
-const INITIAL_STATE: FilterState = { selected: "all" };
+const INITIAL_STATE: FilterType = { selected: "all" };
 
 export const filterReducer = (
-  store: FilterState = INITIAL_STATE,
+  store: FilterType = INITIAL_STATE,
   action: { type: TASK_ACTIONS.SELECT_TASKS; payload: string }
 ) => {
   if (action.type === "selectTasks") {

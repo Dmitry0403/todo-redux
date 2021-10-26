@@ -5,7 +5,12 @@ export interface TasksType {
   tasks: Task[];
 }
 
-const INITIAL_STATE: TasksType = { tasks: [] };
+let INITIAL_STATE: TasksType = { tasks: [] };
+
+if (localStorage.getItem("TODOS")) {
+ //@ts-ignore
+  INITIAL_STATE = {tasks: JSON.parse(localStorage.getItem("TODOS"))}
+}
 
 export const tasksReducer = (
   store: TasksType = INITIAL_STATE,
@@ -15,6 +20,7 @@ export const tasksReducer = (
         payload: string;
       }
     | { type: TASK_ACTIONS.CHECK_TASK; id: number }
+    | { type: TASK_ACTIONS.DELETE_TASK; taskId: number }
 ): TasksType => {
   const { tasks } = store;
   switch (action.type) {
@@ -25,13 +31,12 @@ export const tasksReducer = (
           ...store,
           tasks: tasks.concat([
             { title: value, isChecked: false, id: Date.now() },
-          ]),
+          ]),      
         };
       }
       return store;
     case "checkTask":
       const { id } = action;
-      console.log(id);
       return {
         ...store,
         tasks: tasks.map((item) => {
@@ -41,7 +46,14 @@ export const tasksReducer = (
           return item;
         }),
       };
+    case "deleteTask":
+      const { taskId } = action;
+      return {
+        ...store,
+        tasks: tasks.filter((item) => item.id !== taskId),
+      };
     default:
       return store;
   }
 };
+

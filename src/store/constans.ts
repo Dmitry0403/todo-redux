@@ -17,6 +17,7 @@ export enum TASK_ACTIONS {
   CHECK_TASK = "checkTask",
   SELECT_TASKS = "selectTasks",
   IS_FILTER = "isFilter",
+  DELETE_TASK = "deleteTask"
 } 
 
 export enum TASK_STATUSES {
