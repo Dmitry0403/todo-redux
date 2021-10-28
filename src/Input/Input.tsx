@@ -11,14 +11,14 @@ interface ReduxStateProps {
 
 interface ReduxDispatchProps {
   inputChange: (value: string) => void;
-  taskSubmit: (e: React.FormEvent<HTMLFormElement>, value: string) => void;
+  taskSubmit: (value: string) => void;
 }
 
 class InputBase extends React.Component<ReduxStateProps & ReduxDispatchProps> {
   render() {
     const { value, inputChange, taskSubmit } = this.props;
     return (
-      <form onSubmit={(e) => taskSubmit(e, value)}>
+      <form onSubmit={(e) => {e.preventDefault(); taskSubmit(value)}}>
         <input
           className={css.input}
           type="text"
@@ -42,8 +42,7 @@ const mapDispatchProps = (dispatch: any): ReduxDispatchProps => {
   return {
     inputChange: (payload: string) =>
       dispatch({ type: TASK_ACTIONS.CHANGE_VALUE, payload }),
-    taskSubmit: (e, payload: string) => {
-      e.preventDefault();
+    taskSubmit: (payload: string) => {
       dispatch({ type: TASK_ACTIONS.ADD_TASK, payload });
     },
   };
