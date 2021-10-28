@@ -1,5 +1,5 @@
-import { Task } from "..";
-import { TASK_ACTIONS } from "..";
+import { Task } from "../constans";
+import { TASK_ACTIONS } from "../constans";
 
 export interface TasksType {
   tasks: Task[];
@@ -8,8 +8,7 @@ export interface TasksType {
 let INITIAL_STATE: TasksType = { tasks: [] };
 
 if (localStorage.getItem("TODOS")) {
- //@ts-ignore
-  INITIAL_STATE = {tasks: JSON.parse(localStorage.getItem("TODOS"))}
+  INITIAL_STATE = {tasks: JSON.parse(localStorage.getItem("TODOS") as string)}
 }
 
 export const tasksReducer = (
@@ -24,7 +23,7 @@ export const tasksReducer = (
 ): TasksType => {
   const { tasks } = store;
   switch (action.type) {
-    case "addTask":
+    case TASK_ACTIONS.ADD_TASK:
       const { payload: value } = action;
       if (value.trim()) {
         return {
@@ -35,7 +34,7 @@ export const tasksReducer = (
         };
       }
       return store;
-    case "checkTask":
+    case TASK_ACTIONS.CHECK_TASK:
       const { id } = action;
       return {
         ...store,
@@ -46,7 +45,7 @@ export const tasksReducer = (
           return item;
         }),
       };
-    case "deleteTask":
+    case TASK_ACTIONS.DELETE_TASK:
       const { taskId } = action;
       return {
         ...store,

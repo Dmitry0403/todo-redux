@@ -1,4 +1,4 @@
-import { TASK_ACTIONS } from "..";
+import { TASK_ACTIONS } from "../constans";
 import { Action } from "redux";
 
 export interface ValueInput {
@@ -15,10 +15,10 @@ export const valueReducer = (
   }
 ): ValueInput => {
   switch (action.type) {
-    case "changeValue":
+    case TASK_ACTIONS.CHANGE_VALUE:
       const { payload } = action;
       return { ...store, value: payload };
-    case "addTask":
+    case TASK_ACTIONS.ADD_TASK:
       return { ...store, value: "" };
     default:
       return store;
