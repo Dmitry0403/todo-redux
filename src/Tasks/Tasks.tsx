@@ -12,8 +12,8 @@ interface ReduxStateProps {
 
 
 interface ReduxDispatchProps {
-  onChange: (v: number) => void;
-  onClickTask: (v: number) => void;
+  onChange: (v: string) => void;
+  onClickTask: (v: string) => void;
 }
 
 
@@ -65,8 +65,8 @@ const mapStateProps = (state: RootState): ReduxStateProps => {
 
 const mapDispathProps = (dispatch: any) => {
   return {
-    onChange: (id: number) => dispatch({ type: TASK_ACTIONS.CHECK_TASK, id }),
-    onClickTask: (taskId: number) =>
+    onChange: (id: string) => dispatch({ type: TASK_ACTIONS.CHECK_TASK, id }),
+    onClickTask: (taskId: string) =>
       dispatch({ type: TASK_ACTIONS.DELETE_TASK, taskId }),
   };
 };
