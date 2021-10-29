@@ -1,6 +1,6 @@
+import { v4 as uuidv4 } from "uuid";
 import { Task } from "../constans";
 import { TASK_ACTIONS } from "../constans";
-
 export interface TasksType {
   tasks: Task[];
 }
@@ -8,7 +8,9 @@ export interface TasksType {
 let INITIAL_STATE: TasksType = { tasks: [] };
 
 if (localStorage.getItem("TODOS")) {
-  INITIAL_STATE = {tasks: JSON.parse(localStorage.getItem("TODOS") as string)}
+  INITIAL_STATE = {
+    tasks: JSON.parse(localStorage.getItem("TODOS") as string),
+  };
 }
 
 export const tasksReducer = (
@@ -18,19 +20,19 @@ export const tasksReducer = (
         type: TASK_ACTIONS.ADD_TASK;
         payload: string;
       }
-    | { type: TASK_ACTIONS.CHECK_TASK; id: number }
-    | { type: TASK_ACTIONS.DELETE_TASK; taskId: number }
+    | { type: TASK_ACTIONS.CHECK_TASK; id: string }
+    | { type: TASK_ACTIONS.DELETE_TASK; taskId: string }
 ): TasksType => {
   const { tasks } = store;
   switch (action.type) {
     case TASK_ACTIONS.ADD_TASK:
-      const { payload: value } = action;
-      if (value.trim()) {
+      const { payload } = action;
+      if (payload.trim()) {
         return {
           ...store,
           tasks: tasks.concat([
-            { title: value, isChecked: false, id: Date.now() },
-          ]),      
+            { title: payload, isChecked: false, id: uuidv4() },
+          ]),
         };
       }
       return store;
@@ -55,4 +57,3 @@ export const tasksReducer = (
       return store;
   }
 };
-
