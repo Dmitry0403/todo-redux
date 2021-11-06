@@ -1,7 +1,8 @@
 import css from "./styles.module.css";
 import { connect } from "react-redux";
 import { RootState } from "../store";
-import { TASK_ACTIONS } from "../store";
+import { getFilterState } from "../store/filterReduce";
+import { getFilterSelect } from "../store/filterReduce";
 
 interface ReduxStateProps {
   selected: string;
@@ -27,14 +28,13 @@ function BaseFilter(props: ReduxStateProps & ReduxDispatchProps) {
 
 const mapStateProps = (state: RootState): ReduxStateProps => {
   return {
-    selected: state.filterState.selected,
+    selected: getFilterState(state),
   };
 };
 
 const mapDispatchProps = (dispatch: any): ReduxDispatchProps => {
   return {
-    onSelect: (payload: string) =>
-      dispatch({ type: TASK_ACTIONS.SELECT_TASKS, payload }),
+    onSelect: (payload: string) => dispatch(getFilterSelect(payload)),
   };
 };
 

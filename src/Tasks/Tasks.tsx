@@ -2,20 +2,21 @@ import css from "./styles.module.css";
 import { RootState, Task } from "../store";
 import { Checkbox } from "../Checkbox";
 import { connect } from "react-redux";
-import { TASK_ACTIONS, TASK_STATUSES } from "../store";
+import { getFilterState } from "../store/filterReduce";
+import { TASK_STATUSES } from "../store";
 import { Button } from "../Button";
+import { getTasksState } from "../store/tasksReduce";
+import { tasksAction } from "../store/tasksReduce";
 
 interface ReduxStateProps {
   tasks: Task[];
   select: string;
 }
 
-
 interface ReduxDispatchProps {
   onChange: (v: string) => void;
   onClickTask: (v: string) => void;
 }
-
 
 const BaseTasks: React.FC<ReduxStateProps & ReduxDispatchProps> = ({
   tasks,
@@ -23,7 +24,7 @@ const BaseTasks: React.FC<ReduxStateProps & ReduxDispatchProps> = ({
   onChange,
   onClickTask,
 }) => {
-  localStorage.setItem("TODOS", JSON.stringify(tasks))
+  localStorage.setItem("TODOS", JSON.stringify(tasks));
   let selectTasks: Task[] = [];
   switch (select) {
     case TASK_STATUSES.TODO:
@@ -36,7 +37,7 @@ const BaseTasks: React.FC<ReduxStateProps & ReduxDispatchProps> = ({
       selectTasks = tasks;
   }
   return (
-    <ul className={css.list} >
+    <ul className={css.list}>
       {selectTasks.map((task) => (
         <li key={task.id} className={css.listTask}>
           <Checkbox
@@ -58,16 +59,16 @@ const BaseTasks: React.FC<ReduxStateProps & ReduxDispatchProps> = ({
 
 const mapStateProps = (state: RootState): ReduxStateProps => {
   return {
-    tasks: state.tasksState.tasks,
-    select: state.filterState.selected,
+    tasks: getTasksState(state),
+    select: getFilterState(state),
   };
 };
 
 const mapDispathProps = (dispatch: any) => {
   return {
-    onChange: (id: string) => dispatch({ type: TASK_ACTIONS.CHECK_TASK, id }),
+    onChange: (id: string) => dispatch(tasksAction.getCheckTask(id)),
     onClickTask: (taskId: string) =>
-      dispatch({ type: TASK_ACTIONS.DELETE_TASK, taskId }),
+      dispatch(tasksAction.getDeleteTask(taskId)),
   };
 };
 

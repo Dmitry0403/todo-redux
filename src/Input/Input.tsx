@@ -2,8 +2,10 @@ import React from "react";
 import css from "./styles.module.css";
 import { connect } from "react-redux";
 import type { RootState } from "../store";
-import { TASK_ACTIONS } from "../store";
 import { Button } from "../Button";
+import { getInputState } from "../store/valueReduce";
+import { getInputValue } from "../store/valueReduce";
+import { tasksAction } from "../store/tasksReduce";
 
 interface ReduxStateProps {
   value: string;
@@ -18,7 +20,12 @@ class InputBase extends React.Component<ReduxStateProps & ReduxDispatchProps> {
   render() {
     const { value, inputChange, taskSubmit } = this.props;
     return (
-      <form onSubmit={(e) => {e.preventDefault(); taskSubmit(value)}}>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          taskSubmit(value);
+        }}
+      >
         <input
           className={css.input}
           type="text"
@@ -34,16 +41,15 @@ class InputBase extends React.Component<ReduxStateProps & ReduxDispatchProps> {
 
 const mapStateProps = (state: RootState): ReduxStateProps => {
   return {
-    value: state.inputState.value,
+    value: getInputState(state),
   };
 };
 
 const mapDispatchProps = (dispatch: any): ReduxDispatchProps => {
   return {
-    inputChange: (payload: string) =>
-      dispatch({ type: TASK_ACTIONS.CHANGE_VALUE, payload }),
+    inputChange: (payload: string) => dispatch(getInputValue(payload)),
     taskSubmit: (payload: string) => {
-      dispatch({ type: TASK_ACTIONS.ADD_TASK, payload });
+      dispatch(tasksAction.getAddTask(payload));
     },
   };
 };
