@@ -1,5 +1,6 @@
 import { TASK_ACTIONS } from "../constans";
 
-export const getInputValue = (payload: string) => {
+export const inputValue = (payload: string) => {
   return { type: TASK_ACTIONS.CHANGE_VALUE, payload };
 };
+

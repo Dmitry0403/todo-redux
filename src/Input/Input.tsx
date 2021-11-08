@@ -1,10 +1,9 @@
 import React from "react";
 import css from "./styles.module.css";
 import { connect } from "react-redux";
-import type { RootState } from "../store";
+import { RootState } from "../store";
 import { Button } from "../Button";
-import { getInputState } from "../store/valueReduce";
-import { getInputValue } from "../store/valueReduce";
+import { getInputState, inputValue } from "../store/valueReduce";
 import { tasksAction } from "../store/tasksReduce";
 
 interface ReduxStateProps {
@@ -45,13 +44,9 @@ const mapStateProps = (state: RootState): ReduxStateProps => {
   };
 };
 
-const mapDispatchProps = (dispatch: any): ReduxDispatchProps => {
-  return {
-    inputChange: (payload: string) => dispatch(getInputValue(payload)),
-    taskSubmit: (payload: string) => {
-      dispatch(tasksAction.getAddTask(payload));
-    },
-  };
+const mapDispatchProps = {
+  inputChange: (payload: string) => inputValue(payload),
+  taskSubmit: (payload: string) => tasksAction.addTask(payload),
 };
 
 export const Input = connect(mapStateProps, mapDispatchProps)(InputBase);

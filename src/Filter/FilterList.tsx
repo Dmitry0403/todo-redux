@@ -3,8 +3,7 @@ import { connect } from "react-redux";
 import { RootState } from "../store";
 import { Checkbox } from "../Checkbox";
 import { Filter } from "./Filter";
-import { getIsFilterState } from "../store/isFilterReduce";
-import { getFilterAction } from "../store/isFilterReduce";
+import { getIsFilterState, filterCheck } from "../store/isFilterReduce";
 
 interface ReduxStateProps {
   isFilter: boolean;
@@ -37,11 +36,7 @@ const mapStateProps = (state: RootState): ReduxStateProps => {
   };
 };
 
-const mapDispatchProps = (dispatch: any): ReduxDispatchProps => {
-  return {
-    onChange: () => dispatch(getFilterAction()),
-  };
-};
+const mapDispatchProps = { onChange: filterCheck };
 
 export const FilterList = connect(
   mapStateProps,

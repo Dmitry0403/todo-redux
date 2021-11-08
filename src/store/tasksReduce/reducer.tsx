@@ -1,58 +1,92 @@
 import { v4 as uuidv4 } from "uuid";
+import { Action } from "redux";
 import { Task } from "../constans";
-import { TASK_ACTIONS } from "../constans";
+import { TASK_ACTIONS, LOAD_STATUSES } from "../constans";
 
 export interface TasksType {
-  tasks: Task[];
+  todos: Task[];
+  loadStatus: LOAD_STATUSES;
 }
 
-let INITIAL_STATE: TasksType = { tasks: [] };
-
-if (localStorage.getItem("TODOS")) {
-  INITIAL_STATE = {
-    tasks: JSON.parse(localStorage.getItem("TODOS") as string),
-  };
-}
+let INITIAL_STATE: TasksType = { todos: [], loadStatus: LOAD_STATUSES.SUCCESS };
 
 export const tasksReducer = (
   store: TasksType = INITIAL_STATE,
-  action:
-    | {
-        type: TASK_ACTIONS.ADD_TASK;
-        payload: string;
-      }
-    | { type: TASK_ACTIONS.CHECK_TASK; id: string }
-    | { type: TASK_ACTIONS.DELETE_TASK; taskId: string }
+  action: Action<TASK_ACTIONS>
 ): TasksType => {
-  const { tasks } = store;
+  const { todos } = store;
   switch (action.type) {
-    case TASK_ACTIONS.ADD_TASK:
-      const { payload } = action;
-      if (payload.trim()) {
+    case TASK_ACTIONS.GET_TODOS:
+      return {
+        ...store,
+        loadStatus: LOAD_STATUSES.LOADING,
+      };
+    case TASK_ACTIONS.GET_TODOS_SUCCESS:
+      const { todos: tasks } = action as {
+        type: TASK_ACTIONS.GET_TODOS_SUCCESS;
+        todos: Task[];
+      };
+      if (tasks) {
         return {
           ...store,
-          tasks: tasks.concat([
-            { title: payload, isChecked: false, id: uuidv4() },
-          ]),
+          todos: tasks,
+          loadStatus: LOAD_STATUSES.SUCCESS,
+        };
+      }
+      return {
+        ...store,
+        loadStatus: LOAD_STATUSES.SUCCESS,
+      };
+    case TASK_ACTIONS.GET_TODOS_FAILURE:
+      return {
+        ...store,
+        loadStatus: LOAD_STATUSES.FAILURE,
+      };
+    case TASK_ACTIONS.ADD_TASK:
+      const { payload } = action as {
+        type: TASK_ACTIONS.ADD_TASK;
+        payload: string;
+      };
+      if (payload.trim()) {
+        const newTasks = todos.concat([
+          { title: payload, isDone: false, id: uuidv4() },
+        ]);
+        fetch("api/todos", { method: "POST", body: JSON.stringify(newTasks) });
+        return {
+          ...store,
+          todos: newTasks,
         };
       }
       return store;
-    case TASK_ACTIONS.CHECK_TASK:
-      const { id } = action;
+    case TASK_ACTIONS.DONE_TASK:
+      const { id } = action as {
+        type: TASK_ACTIONS.DONE_TASK;
+        id: string;
+      };
+      const newTasks = todos.map((item) => {
+        if (item.id === id) {
+          return { ...item, isDone: !item.isDone };
+        }
+        return item;
+      });
+      fetch(`api/todos/${id}`, {
+        method: "PATCH",
+        body: JSON.stringify(newTasks),
+      });
       return {
         ...store,
-        tasks: tasks.map((item) => {
-          if (item.id === id) {
-            return { ...item, isChecked: !item.isChecked };
-          }
-          return item;
-        }),
+        todos: newTasks,
       };
     case TASK_ACTIONS.DELETE_TASK:
-      const { taskId } = action;
+      const { taskId } = action as {
+        type: TASK_ACTIONS.DELETE_TASK;
+        taskId: string;
+      };
+      const newTodos = todos.filter((item) => item.id !== taskId);
+      fetch("api/todos", { method: "POST", body: JSON.stringify(newTodos) });
       return {
         ...store,
-        tasks: tasks.filter((item) => item.id !== taskId),
+        todos: newTodos,
       };
     default:
       return store;
