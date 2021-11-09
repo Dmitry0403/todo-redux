@@ -46,7 +46,7 @@ const mapStateProps = (state: RootState): ReduxStateProps => {
 
 const mapDispatchProps = {
   inputChange: (payload: string) => inputValue(payload),
-  taskSubmit: (payload: string) => tasksAction.addTask(payload),
+  taskSubmit: (payload: string) => tasksAction.addTodo(payload),
 };
 
 export const Input = connect(mapStateProps, mapDispatchProps)(InputBase);
