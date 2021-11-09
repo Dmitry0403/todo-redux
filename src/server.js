@@ -6,9 +6,9 @@ createServer({
   },
 
   seeds(server) {
-    server.create("todo", { label: "Learn JS", isDone: false })
-    server.create("todo", { label: "Learn React", isDone: false })
-    server.create("todo", { label: "Learn Redux", isDone: false })
+    server.create("todo", { title: "Learn JS", isDone: false })
+    server.create("todo", { title: "Learn React", isDone: false })
+    server.create("todo", { title: "Learn Redux", isDone: false })
   },
 
 

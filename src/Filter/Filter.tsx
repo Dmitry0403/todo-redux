@@ -1,8 +1,7 @@
 import css from "./styles.module.css";
 import { connect } from "react-redux";
 import { RootState } from "../store";
-import { getFilterState } from "../store/filterReduce";
-import { getFilterSelect } from "../store/filterReduce";
+import { getFilterState, filterSelect } from "../store/filterReduce";
 
 interface ReduxStateProps {
   selected: string;
@@ -32,10 +31,8 @@ const mapStateProps = (state: RootState): ReduxStateProps => {
   };
 };
 
-const mapDispatchProps = (dispatch: any): ReduxDispatchProps => {
-  return {
-    onSelect: (payload: string) => dispatch(getFilterSelect(payload)),
-  };
+const mapDispatchProps = {
+  onSelect: (payload: string) => filterSelect(payload),
 };
 
 export const Filter = connect(mapStateProps, mapDispatchProps)(BaseFilter);

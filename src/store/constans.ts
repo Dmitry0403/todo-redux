@@ -1,6 +1,6 @@
 export interface Task {
   title: string;
-  isChecked: boolean;
+  isDone: boolean;
   id: string;
 }
 
@@ -14,14 +14,24 @@ export interface StateTask {
 export enum TASK_ACTIONS {
   CHANGE_VALUE = "changeValue",
   ADD_TASK = "addTask",
-  CHECK_TASK = "checkTask",
+  DONE_TASK = "doneTask",
   SELECT_TASKS = "selectTasks",
   IS_FILTER = "isFilter",
-  DELETE_TASK = "deleteTask"
+  DELETE_TASK = "deleteTask",
+  GET_TODOS = "getTodos",
+  GET_TODOS_SUCCESS = "getTodosSuccess",
+  GET_TODOS_FAILURE = "getTodosFailure"
 } 
 
 export enum TASK_STATUSES {
   ALL = "all",
   TODO = "todo",
   DONE = "done",
+}
+
+export enum LOAD_STATUSES {
+  UNKNOWN = "unknown",
+  LOADING = "loading",
+  SUCCESS = "loaded",
+  FAILURE = "failure"
 }
