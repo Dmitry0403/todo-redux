@@ -3,7 +3,6 @@ import { Input } from "../Input";
 import { FilterList } from "../Filter";
 import css from "./styles.module.css";
 
-
 export const ToDo = () => {
   return (
     <div>
@@ -18,4 +17,3 @@ export const ToDo = () => {
     </div>
   );
 };
-

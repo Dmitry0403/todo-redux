@@ -1,16 +1,8 @@
 import { TASK_ACTIONS } from "../constans";
 import { Task } from "../constans";
 
-export const addTask = (payload: string) => {
-  return { type: TASK_ACTIONS.ADD_TASK, payload };
-};
-
-export const doneTask = (id: string) => {
-  return { type: TASK_ACTIONS.DONE_TASK, id };
-};
-
-export const deleteTask = (taskId: string) => {
-  return { type: TASK_ACTIONS.DELETE_TASK, taskId };
+export const addTask = () => {
+  return { type: TASK_ACTIONS.ADD_TASK };
 };
 
 export const getTodos = () => ({
@@ -42,6 +34,62 @@ export const fetchTodos = () => async (dispatch: any) => {
       .catch(() => {
         dispatch(getTodosFailure());
       });
+  } catch {
+    dispatch(getTodosFailure());
+  }
+};
+
+export const addTodo = (payload: string) => (dispatch: any) => {
+  if (payload.trim()) {
+    dispatch(addTask());
+    dispatch(getTodos());
+    try {
+      fetch("api/todos", { method: "POST", body: JSON.stringify(payload) })
+        .then((resp) => {
+          if (resp.ok) {
+            dispatch(fetchTodos());
+          }
+          throw new Error("ошибка");
+        })
+        .catch(() => dispatch(getTodosFailure));
+    } catch {
+      dispatch(getTodosFailure());
+    }
+  }
+};
+
+export const toggleTask = (id: string, todos: Task[]) => (dispatch: any) => {
+  dispatch(getTodos());
+  const todo = todos.find((item) => item.id === id);
+  let newTask = {};
+  if (todo) {
+    newTask = { ...todo, isDone: !todo.isDone };
+  }
+  try {
+    fetch(`api/todos/${id}`, { method: "PATCH", body: JSON.stringify(newTask) })
+      .then((resp) => {
+        if (resp.ok) {
+          dispatch(fetchTodos());
+        }
+        throw new Error("ошибка");
+      })
+      .catch(() => dispatch(getTodosFailure));
+  } catch {
+    dispatch(getTodosFailure());
+  }
+};
+
+export const deleteTask = (id: string) => (dispatch: any) => {
+  dispatch(getTodos());
+  try {
+    fetch(`api/todos/${id}`, { method: "DELETE" })
+      .then((resp) => {
+        if (resp.ok) {
+          dispatch(fetchTodos());
+        }
+        throw new Error("ошибка");
+      })
+      .catch(() => dispatch(getTodosFailure));
   } catch {
     dispatch(getTodosFailure());
   }
