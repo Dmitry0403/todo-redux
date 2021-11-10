@@ -5,26 +5,34 @@ import { Checkbox } from "../Checkbox";
 import { Button } from "../Button";
 import { connect } from "react-redux";
 import { getFilterState } from "../store/filterReduce";
-import { getTasksState, tasksAction } from "../store/tasksReduce";
-
+import {
+  getTasksState,
+  getDoneTasks,
+  getTodoTasks,
+  tasksAction,
+} from "../store/tasksReduce";
 import { useEffect } from "react";
 import { Loader } from "../Loader";
 import { getLoadingState } from "../store/tasksReduce/selectors";
 
 interface ReduxStateProps {
+  todo: Task[];
+  done: Task[];
   todos: Task[];
   select: string;
   loadStatus: LOAD_STATUSES;
 }
 
 interface ReduxDispatchProps {
-  onChange: (v: string, todos: Task[]) => void;
+  onChange: (v: string) => void;
   onClickTask: (v: string) => void;
   fetchTodos: () => void;
 }
 
 const BaseTasks: React.FC<ReduxStateProps & ReduxDispatchProps> = ({
   todos,
+  todo,
+  done,
   select,
   loadStatus,
   onChange,
@@ -38,10 +46,10 @@ const BaseTasks: React.FC<ReduxStateProps & ReduxDispatchProps> = ({
   let selectTasks: Task[] = [];
   switch (select) {
     case TASK_STATUSES.TODO:
-      selectTasks = todos.filter((task) => !task.isDone);
+      selectTasks = todo;
       break;
     case TASK_STATUSES.DONE:
-      selectTasks = todos.filter((task) => task.isDone);
+      selectTasks = done;
       break;
     default:
       selectTasks = todos;
@@ -57,7 +65,7 @@ const BaseTasks: React.FC<ReduxStateProps & ReduxDispatchProps> = ({
       {selectTasks.map((task) => (
         <li key={task.id} className={css.listTask}>
           <Checkbox
-            onChange={() => onChange(task.id, todos)}
+            onChange={() => onChange(task.id)}
             checked={task.isDone}
           />
           <span>{task.title}</span>
@@ -75,6 +83,8 @@ const BaseTasks: React.FC<ReduxStateProps & ReduxDispatchProps> = ({
 
 const mapStateToProps = (state: RootState): ReduxStateProps => {
   return {
+    todo: getTodoTasks(state),
+    done: getDoneTasks(state),
     todos: getTasksState(state),
     select: getFilterState(state),
     loadStatus: getLoadingState(state),
@@ -82,7 +92,7 @@ const mapStateToProps = (state: RootState): ReduxStateProps => {
 };
 
 const mapDispathToProps = {
-  onChange: (id: string, todos: Task[]) => tasksAction.toggleTask(id, todos),
+  onChange: (id: string) => tasksAction.toggleTask(id),
   onClickTask: (taskId: string) => tasksAction.deleteTask(taskId),
   fetchTodos: tasksAction.fetchTodos,
 };

@@ -32,7 +32,6 @@ createServer({
 
     this.del("/todos/:id", (schema, request) => {
       const id = request.params.id;
-
       schema.todos.find(id).destroy();
     });
   },
