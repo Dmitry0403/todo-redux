@@ -25,11 +25,11 @@ export const Tasks: React.FC = () => {
   const onChange = (id: string) => dispatch(tasksAction.toggleTask(id));
   const onClickTask = (taskId: string) =>
     dispatch(tasksAction.deleteTask(taskId));
-  const fetchTodos = () => dispatch(tasksAction.fetchTodos());
+  const fetchTodos = tasksAction.fetchTodos;
 
   useEffect(() => {
-    fetchTodos();
-  }, []);
+    dispatch(fetchTodos());
+  }, [dispatch]);
 
   let selectTasks: Task[] = [];
   switch (select) {
