@@ -1,9 +1,9 @@
 import css from "./styles.module.css";
-import { RootState, Task } from "../store";
+import { Task } from "../store";
 import { TASK_STATUSES, LOAD_STATUSES } from "../store";
 import { Checkbox } from "../Checkbox";
 import { Button } from "../Button";
-import { connect } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { getFilterState } from "../store/filterReduce";
 import {
   getTasksState,
@@ -15,33 +15,21 @@ import { useEffect } from "react";
 import { Loader } from "../Loader";
 import { getLoadingState } from "../store/tasksReduce/selectors";
 
-interface ReduxStateProps {
-  todo: Task[];
-  done: Task[];
-  todos: Task[];
-  select: string;
-  loadStatus: LOAD_STATUSES;
-}
+export const Tasks: React.FC = () => {
+  const todos = useSelector(getTasksState);
+  const todo = useSelector(getTodoTasks);
+  const done = useSelector(getDoneTasks);
+  const select = useSelector(getFilterState);
+  const loadStatus = useSelector(getLoadingState);
+  const dispatch = useDispatch();
+  const onChange = (id: string) => dispatch(tasksAction.toggleTask(id));
+  const onClickTask = (taskId: string) =>
+    dispatch(tasksAction.deleteTask(taskId));
+  const fetchTodos = () => dispatch(tasksAction.fetchTodos());
 
-interface ReduxDispatchProps {
-  onChange: (v: string) => void;
-  onClickTask: (v: string) => void;
-  fetchTodos: () => void;
-}
-
-const BaseTasks: React.FC<ReduxStateProps & ReduxDispatchProps> = ({
-  todos,
-  todo,
-  done,
-  select,
-  loadStatus,
-  onChange,
-  onClickTask,
-  fetchTodos,
-}) => {
   useEffect(() => {
     fetchTodos();
-  }, [fetchTodos]);
+  }, []);
 
   let selectTasks: Task[] = [];
   switch (select) {
@@ -64,10 +52,7 @@ const BaseTasks: React.FC<ReduxStateProps & ReduxDispatchProps> = ({
     <ul className={css.list}>
       {selectTasks.map((task) => (
         <li key={task.id} className={css.listTask}>
-          <Checkbox
-            onChange={() => onChange(task.id)}
-            checked={task.isDone}
-          />
+          <Checkbox onChange={() => onChange(task.id)} checked={task.isDone} />
           <span>{task.title}</span>
           <Button
             type="button"
@@ -80,21 +65,3 @@ const BaseTasks: React.FC<ReduxStateProps & ReduxDispatchProps> = ({
     </ul>
   );
 };
-
-const mapStateToProps = (state: RootState): ReduxStateProps => {
-  return {
-    todo: getTodoTasks(state),
-    done: getDoneTasks(state),
-    todos: getTasksState(state),
-    select: getFilterState(state),
-    loadStatus: getLoadingState(state),
-  };
-};
-
-const mapDispathToProps = {
-  onChange: (id: string) => tasksAction.toggleTask(id),
-  onClickTask: (taskId: string) => tasksAction.deleteTask(taskId),
-  fetchTodos: tasksAction.fetchTodos,
-};
-
-export const Tasks = connect(mapStateToProps, mapDispathToProps)(BaseTasks);

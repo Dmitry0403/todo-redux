@@ -1,19 +1,13 @@
 import css from "./styles.module.css";
-import { connect } from "react-redux";
-import { RootState } from "../store";
+import { useSelector, useDispatch } from "react-redux";
 import { getFilterState, filterSelect } from "../store/filterReduce";
 
-interface ReduxStateProps {
-  selected: string;
-}
-
-interface ReduxDispatchProps {
-  onSelect: (value: string) => void;
-}
-
-function BaseFilter(props: ReduxStateProps & ReduxDispatchProps) {
+export const Filter: React.FC = () => {
   const titles: string[] = ["all", "todo", "done"];
-  const { selected, onSelect } = props;
+  const selected = useSelector(getFilterState);
+  const dispatch = useDispatch();
+  const onSelect = (payload: string) => dispatch(filterSelect(payload));
+
   return (
     <select className={css.filter} onChange={(e) => onSelect(e.target.value)}>
       {titles.map((item) => (
@@ -23,16 +17,4 @@ function BaseFilter(props: ReduxStateProps & ReduxDispatchProps) {
       ))}
     </select>
   );
-}
-
-const mapStateProps = (state: RootState): ReduxStateProps => {
-  return {
-    selected: getFilterState(state),
-  };
 };
-
-const mapDispatchProps = {
-  onSelect: (payload: string) => filterSelect(payload),
-};
-
-export const Filter = connect(mapStateProps, mapDispatchProps)(BaseFilter);

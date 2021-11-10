@@ -58,7 +58,7 @@ export const toggleTask =
   (id: string) => async (dispatch: any, getState: any) => {
     const todo = getState((state: RootState) => {
       const todos = getTasksState(state);
-      return todos.find((item: any) => item.id === id);
+      return todos.find((item) => item.id === id);
     });
     const newTodo = { ...todo, isDone: !todo.isDone };
     try {
