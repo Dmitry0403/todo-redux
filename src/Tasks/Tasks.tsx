@@ -29,7 +29,7 @@ export const Tasks: React.FC = () => {
 
   useEffect(() => {
     dispatch(fetchTodos());
-  }, [dispatch]);
+  }, [dispatch, fetchTodos]);
 
   let selectTasks: Task[] = [];
   switch (select) {
