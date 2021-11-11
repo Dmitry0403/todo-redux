@@ -1,6 +1,7 @@
 import { getTasksState } from "./selectors";
 import { TASK_ACTIONS } from "../constans";
 import { Task } from "../constans";
+import { RootState } from "../store";
 
 export const addTask = () => {
   return { type: TASK_ACTIONS.ADD_TASK };
@@ -42,7 +43,7 @@ export const addTodo = (payload: string) => async (dispatch: any) => {
     try {
       const responce = await fetch("api/todos", {
         method: "POST",
-        body: JSON.stringify(payload),
+        body: payload,
       });
       if (responce.ok) {
         dispatch(fetchTodos());
@@ -54,7 +55,7 @@ export const addTodo = (payload: string) => async (dispatch: any) => {
 };
 
 export const toggleTask =
-  (id: string) => async (dispatch: any, getState: any) => {
+  (id: string) => async (dispatch: any, getState: () => RootState) => {
     const state = getState();
     const todos = getTasksState(state);
     const todo = todos.find((item) => item.id === id);
