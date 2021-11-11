@@ -1,25 +1,16 @@
 import css from "./styles.module.css";
 import { Task } from "../store";
-import { TASK_STATUSES, LOAD_STATUSES } from "../store";
+import { LOAD_STATUSES } from "../store";
 import { Checkbox } from "../Checkbox";
 import { Button } from "../Button";
 import { useSelector, useDispatch } from "react-redux";
-import { getFilterState } from "../store/filterReduce";
-import {
-  getTasksState,
-  getDoneTasks,
-  getTodoTasks,
-  tasksAction,
-} from "../store/tasksReduce";
+import { tasksAction } from "../store/tasksReduce";
 import { useEffect } from "react";
 import { Loader } from "../Loader";
-import { getLoadingState } from "../store/tasksReduce/selectors";
+import { getLoadingState, getTasks } from "../store/tasksReduce/selectors";
 
 export const Tasks: React.FC = () => {
-  const todos = useSelector(getTasksState);
-  const todo = useSelector(getTodoTasks);
-  const done = useSelector(getDoneTasks);
-  const select = useSelector(getFilterState);
+  const selectTasks = useSelector(getTasks);
   const loadStatus = useSelector(getLoadingState);
   const dispatch = useDispatch();
   const onChange = (id: string) => dispatch(tasksAction.toggleTask(id));
@@ -31,26 +22,19 @@ export const Tasks: React.FC = () => {
     dispatch(fetchTodos());
   }, [dispatch, fetchTodos]);
 
-  let selectTasks: Task[] = [];
-  switch (select) {
-    case TASK_STATUSES.TODO:
-      selectTasks = todo;
-      break;
-    case TASK_STATUSES.DONE:
-      selectTasks = done;
-      break;
-    default:
-      selectTasks = todos;
-  }
   if (loadStatus === LOAD_STATUSES.LOADING) {
     return <Loader />;
   }
   if (loadStatus === LOAD_STATUSES.FAILURE) {
     return <div>"Ошибка, попробуйте позже"</div>;
   }
+  let tasks: Task[] = [];
+  if (selectTasks) {
+    tasks = selectTasks;
+  }
   return (
     <ul className={css.list}>
-      {selectTasks.map((task) => (
+      {tasks.map((task) => (
         <li key={task.id} className={css.listTask}>
           <Checkbox onChange={() => onChange(task.id)} checked={task.isDone} />
           <span>{task.title}</span>
