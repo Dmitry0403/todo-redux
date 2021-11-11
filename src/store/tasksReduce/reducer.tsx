@@ -7,7 +7,7 @@ export interface TasksType {
   loadStatus: LOAD_STATUSES;
 }
 
-let INITIAL_STATE: TasksType = { todos: [], loadStatus: LOAD_STATUSES.SUCCESS };
+let INITIAL_STATE: TasksType = { todos: [], loadStatus: LOAD_STATUSES.UNKNOWN };
 
 export const tasksReducer = (
   store: TasksType = INITIAL_STATE,

@@ -1,20 +1,13 @@
 import css from "./styles.module.css";
-import { connect } from "react-redux";
-import { RootState } from "../store";
+import { useSelector, useDispatch } from "react-redux";
 import { Checkbox } from "../Checkbox";
 import { Filter } from "./Filter";
 import { getIsFilterState, filterCheck } from "../store/isFilterReduce";
 
-interface ReduxStateProps {
-  isFilter: boolean;
-}
-
-interface ReduxDispatchProps {
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-}
-
-function BaseFilterList(props: ReduxStateProps & ReduxDispatchProps) {
-  const { isFilter, onChange } = props;
+export function FilterList() {
+  const isFilter = useSelector(getIsFilterState);
+  const dispatch = useDispatch();
+  const onChange = () => dispatch(filterCheck());
   return (
     <div>
       <div className={css.filterList}>
@@ -29,16 +22,3 @@ function BaseFilterList(props: ReduxStateProps & ReduxDispatchProps) {
     </div>
   );
 }
-
-const mapStateProps = (state: RootState): ReduxStateProps => {
-  return {
-    isFilter: getIsFilterState(state),
-  };
-};
-
-const mapDispatchProps = { onChange: filterCheck };
-
-export const FilterList = connect(
-  mapStateProps,
-  mapDispatchProps
-)(BaseFilterList);

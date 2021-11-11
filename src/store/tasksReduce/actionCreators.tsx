@@ -1,3 +1,4 @@
+import { getTasksState } from "./selectors";
 import { TASK_ACTIONS } from "../constans";
 import { Task } from "../constans";
 
@@ -18,79 +19,69 @@ export const getTodosFailure = () => ({
   type: TASK_ACTIONS.GET_TODOS_FAILURE,
 });
 
-export const fetchTodos = () => async (dispatch: any) => {
+export const fetchTodos = () => (dispatch: any) => {
   dispatch(getTodos());
-  try {
-    fetch("api/todos")
-      .then((resp) => {
-        if (resp.ok) {
-          return resp.json();
-        }
-        throw new Error("ошибка");
-      })
-      .then(({ todos }) => {
-        dispatch(getTodosSuccess(todos));
-      })
-      .catch(() => {
-        dispatch(getTodosFailure());
-      });
-  } catch {
-    dispatch(getTodosFailure());
-  }
+  fetch("api/todos")
+    .then((resp) => {
+      if (resp.ok) {
+        return resp.json();
+      }
+      throw new Error("ошибка");
+    })
+    .then(({ todos }) => {
+      dispatch(getTodosSuccess(todos));
+    })
+    .catch(() => {
+      dispatch(getTodosFailure());
+    });
 };
 
-export const addTodo = (payload: string) => (dispatch: any) => {
+export const addTodo = (payload: string) => async (dispatch: any) => {
   if (payload.trim()) {
     dispatch(addTask());
-    dispatch(getTodos());
     try {
-      fetch("api/todos", { method: "POST", body: JSON.stringify(payload) })
-        .then((resp) => {
-          if (resp.ok) {
-            dispatch(fetchTodos());
-          }
-          throw new Error("ошибка");
-        })
-        .catch(() => dispatch(getTodosFailure));
-    } catch {
+      const responce = await fetch("api/todos", {
+        method: "POST",
+        body: JSON.stringify(payload),
+      });
+      if (responce.ok) {
+        dispatch(fetchTodos());
+      } else throw new Error("ошибка");
+    } catch (error) {
       dispatch(getTodosFailure());
     }
   }
 };
 
-export const toggleTask = (id: string, todos: Task[]) => (dispatch: any) => {
-  dispatch(getTodos());
-  const todo = todos.find((item) => item.id === id);
-  let newTask = {};
-  if (todo) {
-    newTask = { ...todo, isDone: !todo.isDone };
-  }
-  try {
-    fetch(`api/todos/${id}`, { method: "PATCH", body: JSON.stringify(newTask) })
-      .then((resp) => {
-        if (resp.ok) {
-          dispatch(fetchTodos());
-        }
-        throw new Error("ошибка");
-      })
-      .catch(() => dispatch(getTodosFailure));
-  } catch {
-    dispatch(getTodosFailure());
-  }
-};
+export const toggleTask =
+  (id: string) => async (dispatch: any, getState: any) => {
+    const state = getState();
+    const todos = getTasksState(state);
+    const todo = todos.find((item) => item.id === id);
+    let newTodo = {};
+    if (todo) {
+      newTodo = { ...todo, isDone: !todo.isDone };
+    }
+    try {
+      const resp = await fetch(`api/todos/${id}`, {
+        method: "PATCH",
+        body: JSON.stringify(newTodo),
+      });
+      if (resp.ok) {
+        dispatch(fetchTodos());
+      } else throw new Error("ошибка");
+    } catch (err) {
+      dispatch(getTodosFailure());
+    }
+  };
 
-export const deleteTask = (id: string) => (dispatch: any) => {
-  dispatch(getTodos());
+export const deleteTask = (id: string) => async (dispatch: any) => {
   try {
-    fetch(`api/todos/${id}`, { method: "DELETE" })
-      .then((resp) => {
-        if (resp.ok) {
-          dispatch(fetchTodos());
-        }
-        throw new Error("ошибка");
-      })
-      .catch(() => dispatch(getTodosFailure));
-  } catch {
+    const resp = await fetch(`api/todos/${id}`, { method: "DELETE" });
+    if (resp.ok) {
+      dispatch(fetchTodos());
+    } else throw new Error("ошибка");
+  } catch (err) {
     dispatch(getTodosFailure());
   }
 };
