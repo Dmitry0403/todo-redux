@@ -1,16 +1,25 @@
 .list {
   list-style-type: none;
   font-size: 30px;
-  margin-left: 50px;
+  margin-left: 40px;
 }
 
 .listTask {
   display: flex;
-  margin-bottom: 5px;
+  margin-bottom: 10px;
 }
 
 .button {
   font-size: 20px;
   margin-left: 20px;
   border-radius: 10px;
+}
+
+@media screen and (max-width: 800px) {
+  ul {
+    padding-left: 0;
+  }
+  .list {
+    margin-left: 5px;
+  }
 }
