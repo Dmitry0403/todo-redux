@@ -22,7 +22,7 @@ export const getTodosFailure = () => ({
 
 export const fetchTodos = () => (dispatch: any) => {
   dispatch(getTodos());
-  fetch("api/todos")
+  fetch("/api/todos")
     .then((resp) => {
       if (resp.ok) {
         return resp.json();
@@ -41,7 +41,7 @@ export const addTodo = (payload: string) => async (dispatch: any) => {
   if (payload.trim()) {
     dispatch(addTask());
     try {
-      const responce = await fetch("api/todos", {
+      const responce = await fetch("/api/todos", {
         method: "POST",
         body: payload,
       });
@@ -64,7 +64,7 @@ export const toggleTask =
       newTodo = { ...todo, isDone: !todo.isDone };
     }
     try {
-      const resp = await fetch(`api/todos/${id}`, {
+      const resp = await fetch(`/api/todos/${id}`, {
         method: "PATCH",
         body: JSON.stringify(newTodo),
       });
@@ -78,7 +78,7 @@ export const toggleTask =
 
 export const deleteTask = (id: string) => async (dispatch: any) => {
   try {
-    const resp = await fetch(`api/todos/${id}`, { method: "DELETE" });
+    const resp = await fetch(`/api/todos/${id}`, { method: "DELETE" });
     if (resp.ok) {
       dispatch(fetchTodos());
     } else throw new Error("ошибка");

@@ -1,6 +1,6 @@
 import "./styles.css";
 
-export const Loader = () => {
+export const Loader:React.FC = () => {
   return (
     <div className="lds-ellipsis">
       <div></div>
